@@ -25,3 +25,9 @@ build/
 
 # Others
 coverage/
+
+server.js/
+
+db.js/
+
+package-lock.json/
