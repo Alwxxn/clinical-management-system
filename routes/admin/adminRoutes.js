@@ -3,10 +3,27 @@ const router = express.Router();
 const adminController = require('../../controllers/admin/adminController');
 const auth = require('../../middleware/auth');
 
-const { registerStaffValidator, updateStaffValidator } = require('../../validators/admin/adminValidators');
+const { registerStaffValidator, updateStaffValidator, registerFirstAdminValidator } = require('../../validators/admin/adminValidators');
 const { validationResult } = require('express-validator');
 
-// Create Staff
+// Test route
+router.get('/test', (req, res) => {
+  res.json({ message: 'Admin routes are working!' });
+});
+
+// Create First Admin (no auth required)
+router.post(
+  '/staff/first-admin',
+  registerFirstAdminValidator,
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+    next();
+  },
+  adminController.createFirstAdmin
+);
+
+// Create Staff (requires admin auth)
 router.post(
   '/staff',
   auth('admin'),

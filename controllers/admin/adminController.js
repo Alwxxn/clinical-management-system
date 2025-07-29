@@ -1,6 +1,39 @@
 const bcrypt = require('bcryptjs');
 const User = require('../../models/admin/admin');
 
+// Create First Admin (no auth required)
+exports.createFirstAdmin = async (req, res) => {
+  try {
+    // Check if any admin exists
+    const existingAdmin = await User.findOne({ role: 'admin' });
+    if (existingAdmin) {
+      return res.status(400).json({ error: 'Admin already exists. Use regular staff creation.' });
+    }
+
+    const { name, dob, gender, phone, address, email, password } = req.body;
+    const role = 'admin'; // Force role to admin
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const admin = new User({
+      name,
+      dob,
+      gender,
+      phone,
+      address,
+      email,
+      role,
+      password: hashedPassword
+    });
+
+    await admin.save();
+    res.status(201).json({ message: 'First admin created successfully', adminId: admin._id });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
 exports.createStaff = async (req, res) => {
   try {
     const { name, dob, gender, phone, address, email, role, specialisation, workingDays, fee, password } = req.body;

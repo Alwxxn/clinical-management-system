@@ -1,5 +1,21 @@
 const { body } = require('express-validator');
 
+exports.registerFirstAdminValidator = [
+  body('name').notEmpty().withMessage('Name is required'),
+  body('dob').isISO8601().withMessage('DOB must be a valid date'),
+  body('gender').isIn(['Male', 'Female', 'Other']).withMessage('Invalid gender'),
+  body('phone')
+    .matches(/^\+91\d{10}$/)
+    .withMessage('Phone number must be in format +911234567890'),
+  body('address').notEmpty().withMessage('Address is required'),
+  body('email')
+    .isEmail().withMessage('Invalid email')
+    .bail()
+    .matches(/\.com$/).withMessage('Email must end with .com'),
+  body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
+  // Custom age validation will be handled in controller/model
+];
+
 exports.registerStaffValidator = [
   body('name').notEmpty().withMessage('Name is required'),
   body('dob').isISO8601().withMessage('DOB must be a valid date'),

@@ -1,5 +1,26 @@
 const LabTestResult = require('../../models/labtech/labTestResult');
 
+// Create Lab Test Result (new method)
+exports.createLabTestResult = async (req, res) => {
+  try {
+    const { appointmentId, patientId, testName, testResult, testDate, notes } = req.body;
+
+    const labTestResult = new LabTestResult({
+      appointmentId,
+      patientId,
+      testName,
+      testResult,
+      testDate,
+      notes
+    });
+
+    await labTestResult.save();
+    res.status(201).json({ message: 'Lab test result created successfully', labTestResult });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
 // Record Lab Test Result
 exports.recordLabTestResult = async (req, res) => {
   try {

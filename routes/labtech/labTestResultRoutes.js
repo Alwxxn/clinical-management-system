@@ -5,6 +5,18 @@ const auth = require('../../middleware/auth');
 const { labTestResultValidator } = require('../../validators/labtech/labtechValidators');
 const { validationResult } = require('express-validator');
 
+// Create Lab Test Result (new endpoint)
+router.post(
+  '/lab-test-results',
+  auth('labtech'),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+    next();
+  },
+  controller.createLabTestResult
+);
+
 router.put(
   '/labtests/results/:labTestPrescriptionId',
   auth('labtech'),

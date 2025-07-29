@@ -1,0 +1,576 @@
+{
+  "info": {
+    "name": "Clinical Management System",
+    "description": "Complete API collection for testing the Clinical Management System",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "doctorToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "receptionistToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "pharmacistToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "labtechToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Admin Setup",
+      "item": [
+        {
+          "name": "Create First Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Admin User\",\n  \"dob\": \"1990-01-01\",\n  \"gender\": \"Male\",\n  \"phone\": \"+911234567890\",\n  \"address\": \"123 Admin Street, City\",\n  \"email\": \"admin@clinic.com\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/staff/first-admin",
+              "host": ["{{baseUrl}}"],
+              "path": ["staff", "first-admin"]
+            }
+          }
+        },
+        {
+          "name": "Admin Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@clinic.com\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('adminToken', response.token);",
+                  "    console.log('Admin token saved:', response.token);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "2. Staff Management",
+      "item": [
+        {
+          "name": "Create Doctor",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Dr. John Smith\",\n  \"dob\": \"1985-05-15\",\n  \"gender\": \"Male\",\n  \"phone\": \"+911234567891\",\n  \"address\": \"456 Doctor Lane, City\",\n  \"email\": \"doctor@clinic.com\",\n  \"role\": \"doctor\",\n  \"specialisation\": \"Cardiology\",\n  \"workingDays\": [\"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\"],\n  \"fee\": 500,\n  \"password\": \"doctor123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/staff",
+              "host": ["{{baseUrl}}"],
+              "path": ["staff"]
+            }
+          }
+        },
+        {
+          "name": "Create Receptionist",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jane Receptionist\",\n  \"dob\": \"1992-03-20\",\n  \"gender\": \"Female\",\n  \"phone\": \"+911234567892\",\n  \"address\": \"789 Reception Ave, City\",\n  \"email\": \"receptionist@clinic.com\",\n  \"role\": \"receptionist\",\n  \"password\": \"receptionist123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/staff",
+              "host": ["{{baseUrl}}"],
+              "path": ["staff"]
+            }
+          }
+        },
+        {
+          "name": "Create Pharmacist",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Mike Pharmacist\",\n  \"dob\": \"1988-07-10\",\n  \"gender\": \"Male\",\n  \"phone\": \"+911234567893\",\n  \"address\": \"321 Pharmacy Road, City\",\n  \"email\": \"pharmacist@clinic.com\",\n  \"role\": \"pharmacist\",\n  \"password\": \"pharmacist123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/staff",
+              "host": ["{{baseUrl}}"],
+              "path": ["staff"]
+            }
+          }
+        },
+        {
+          "name": "Create Lab Technician",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sarah LabTech\",\n  \"dob\": \"1991-11-25\",\n  \"gender\": \"Female\",\n  \"phone\": \"+911234567894\",\n  \"address\": \"654 Lab Street, City\",\n  \"email\": \"labtech@clinic.com\",\n  \"role\": \"labtech\",\n  \"password\": \"labtech123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/staff",
+              "host": ["{{baseUrl}}"],
+              "path": ["staff"]
+            }
+          }
+        },
+        {
+          "name": "List All Staff",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/staff",
+              "host": ["{{baseUrl}}"],
+              "path": ["staff"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Authentication",
+      "item": [
+        {
+          "name": "Doctor Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"doctor@clinic.com\",\n  \"password\": \"doctor123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('doctorToken', response.token);",
+                  "    console.log('Doctor token saved:', response.token);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Receptionist Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"receptionist@clinic.com\",\n  \"password\": \"receptionist123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('receptionistToken', response.token);",
+                  "    console.log('Receptionist token saved:', response.token);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Pharmacist Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"pharmacist@clinic.com\",\n  \"password\": \"pharmacist123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('pharmacistToken', response.token);",
+                  "    console.log('Pharmacist token saved:', response.token);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Lab Technician Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"labtech@clinic.com\",\n  \"password\": \"labtech123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('labtechToken', response.token);",
+                  "    console.log('Lab Technician token saved:', response.token);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "4. Patient Management",
+      "item": [
+        {
+          "name": "Register Patient",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{receptionistToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Patient One\",\n  \"dob\": \"1980-12-15\",\n  \"gender\": \"Male\",\n  \"phone\": \"+911234567895\",\n  \"address\": \"123 Patient Street, City\",\n  \"email\": \"patient1@email.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/patients",
+              "host": ["{{baseUrl}}"],
+              "path": ["patients"]
+            }
+          }
+        },
+        {
+          "name": "List All Patients",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{receptionistToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/patients",
+              "host": ["{{baseUrl}}"],
+              "path": ["patients"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Appointment Management",
+      "item": [
+        {
+          "name": "Schedule Appointment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{receptionistToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"patientId\": \"PAT-20240607-ABC123\",\n  \"doctorId\": \"{doctor_user_id}\",\n  \"date\": \"2024-06-10\",\n  \"timeSlot\": \"10:00-10:30\",\n  \"createdBy\": \"receptionist\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/appointments",
+              "host": ["{{baseUrl}}"],
+              "path": ["appointments"]
+            }
+          }
+        },
+        {
+          "name": "List Appointments by Date",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{receptionistToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/appointments?date=2024-06-10",
+              "host": ["{{baseUrl}}"],
+              "path": ["appointments"],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "2024-06-10"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Consultation Management",
+      "item": [
+        {
+          "name": "Add Consultation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctorToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"appointmentId\": \"APT-123456\",\n  \"doctorId\": \"{doctor_user_id}\",\n  \"patientId\": \"PAT-20240607-ABC123\",\n  \"symptoms\": \"Fever, headache, fatigue\",\n  \"diagnosis\": \"Common cold\",\n  \"notes\": \"Patient shows symptoms of common cold. Rest and fluids recommended.\",\n  \"prescription\": \"Paracetamol 500mg\",\n  \"medicine\": \"Paracetamol\",\n  \"labTest\": \"Blood test if symptoms persist\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/consultations",
+              "host": ["{{baseUrl}}"],
+              "path": ["consultations"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Medicine Management",
+      "item": [
+        {
+          "name": "Add Medicine",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{pharmacistToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Paracetamol\",\n  \"genericName\": \"Acetaminophen\",\n  \"strength\": \"500mg\",\n  \"expiry\": \"2025-12-31\",\n  \"dosage\": \"1 tablet every 6 hours\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/medicines",
+              "host": ["{{baseUrl}}"],
+              "path": ["medicines"]
+            }
+          }
+        },
+        {
+          "name": "List All Medicines",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{pharmacistToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/medicines",
+              "host": ["{{baseUrl}}"],
+              "path": ["medicines"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Lab Test Results",
+      "item": [
+        {
+          "name": "Add Lab Test Result",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{labtechToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"appointmentId\": \"APT-123456\",\n  \"patientId\": \"PAT-20240607-ABC123\",\n  \"testName\": \"Blood Test\",\n  \"testResult\": \"Normal\",\n  \"testDate\": \"2024-06-10\",\n  \"notes\": \"All parameters within normal range\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/lab-test-results",
+              "host": ["{{baseUrl}}"],
+              "path": ["lab-test-results"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+} 
