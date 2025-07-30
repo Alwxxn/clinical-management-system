@@ -18,23 +18,23 @@ app.use('/api', require('./routes/admin/roleRoutes'));
 app.use('/api', require('./routes/admin/specializationRoutes'));
 app.use('/api', require('./routes/admin/authRoutes'));
 
-// Receptionist routes
-app.use('/api', require('./routes/receptionist/receptionistRoutes'));
-app.use('/api', require('./routes/receptionist/appointmentRoutes'));
-app.use('/api', require('./routes/receptionist/billingRoutes'));
-app.use('/api', require('./routes/receptionist/reportingRoutes'));
+// // Receptionist routes
+// app.use('/api', require('./routes/receptionist/receptionistRoutes'));
+// app.use('/api', require('./routes/receptionist/appointmentRoutes'));
+// app.use('/api', require('./routes/receptionist/billingRoutes'));
+// app.use('/api', require('./routes/receptionist/reportingRoutes'));
 
-// Doctor routes
-app.use('/api', require('./routes/doctor/consultationRoutes'));
-app.use('/api', require('./routes/doctor/medicinePrescriptionRoutes'));
-app.use('/api', require('./routes/doctor/labTestPrescriptionRoutes'));
+// // Doctor routes
+// app.use('/api', require('./routes/doctor/consultationRoutes'));
+// app.use('/api', require('./routes/doctor/medicinePrescriptionRoutes'));
+// app.use('/api', require('./routes/doctor/labTestPrescriptionRoutes'));
 
-// Pharmacist routes
-app.use('/api', require('./routes/pharmacist/medicineRoutes'));
-app.use('/api', require('./routes/pharmacist/medicineInventoryRoutes'));
+// // Pharmacist routes
+// app.use('/api', require('./routes/pharmacist/medicineRoutes'));
+// app.use('/api', require('./routes/pharmacist/medicineInventoryRoutes'));
 
-// Labtech routes
-app.use('/api', require('./routes/labtech/labTestResultRoutes'));
+// // Labtech routes
+// app.use('/api', require('./routes/labtech/labTestResultRoutes'));
 
 // Connect to MongoDB
 connectDB();
