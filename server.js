@@ -24,10 +24,10 @@ app.use(cors());
 // app.use('/api', require('./routes/receptionist/billingRoutes'));
 // app.use('/api', require('./routes/receptionist/reportingRoutes'));
 
-// Doctor routes
-app.use('/api', require('./routes/doctor/consultationRoutes'));
-app.use('/api', require('./routes/doctor/medicinePrescriptionRoutes'));
-app.use('/api', require('./routes/doctor/labTestPrescriptionRoutes'));
+// // Doctor routes
+// app.use('/api', require('./routes/doctor/consultationRoutes'));
+// app.use('/api', require('./routes/doctor/medicinePrescriptionRoutes'));
+// app.use('/api', require('./routes/doctor/labTestPrescriptionRoutes'));
 
 // // Pharmacist routes
 // app.use('/api', require('./routes/pharmacist/medicineRoutes'));
