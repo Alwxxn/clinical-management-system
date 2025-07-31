@@ -33,8 +33,8 @@ app.use(cors());
 // app.use('/api', require('./routes/pharmacist/medicineRoutes'));
 // app.use('/api', require('./routes/pharmacist/medicineInventoryRoutes'));
 
-// Labtech routes
-app.use('/api', require('./routes/labtech/labTestResultRoutes'));
+// // Labtech routes
+// app.use('/api', require('./routes/labtech/labTestResultRoutes'));
 
 // Connect to MongoDB
 connectDB();
