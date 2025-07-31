@@ -11,12 +11,12 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Admin routes
-app.use('/api', require('./routes/admin/adminRoutes'));
-app.use('/api', require('./routes/admin/doctorRoutes'));
-app.use('/api', require('./routes/admin/roleRoutes'));
-app.use('/api', require('./routes/admin/specializationRoutes'));
-app.use('/api', require('./routes/admin/authRoutes'));
+// // Admin routes
+// app.use('/api', require('./routes/admin/adminRoutes'));
+// app.use('/api', require('./routes/admin/doctorRoutes'));
+// app.use('/api', require('./routes/admin/roleRoutes'));
+// app.use('/api', require('./routes/admin/specializationRoutes'));
+// app.use('/api', require('./routes/admin/authRoutes'));
 
 // // Receptionist routes
 // app.use('/api', require('./routes/receptionist/receptionistRoutes'));
