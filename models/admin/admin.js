@@ -22,6 +22,7 @@ const userSchema = new mongoose.Schema({
     enum: ['admin', 'doctor', 'receptionist', 'pharmacist', 'labtech'],
     required: true
   },
+  staffId: { type: String, unique: true, required: true }, // Custom staff ID
   specialisation: { type: String }, // for doctors
   workingDays: [{ type: String }], // e.g., ['Monday', 'Tuesday']
   fee: { type: Number }, // for doctors
