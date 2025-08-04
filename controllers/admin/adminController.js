@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const User = require('../../models/admin/admin');
+const generateStaffId = require('../../utils/generateStaffId');
 
 // Create First Admin (no auth required)
 exports.createFirstAdmin = async (req, res) => {
@@ -13,6 +14,9 @@ exports.createFirstAdmin = async (req, res) => {
     const { name, dob, gender, phone, address, email, password } = req.body;
     const role = 'admin'; // Force role to admin
 
+    // Generate staff ID
+    const staffId = generateStaffId(role);
+
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -24,11 +28,12 @@ exports.createFirstAdmin = async (req, res) => {
       address,
       email,
       role,
+      staffId,
       password: hashedPassword
     });
 
     await admin.save();
-    res.status(201).json({ message: 'First admin created successfully', adminId: admin._id });
+    res.status(201).json({ message: 'First admin created successfully', adminId: admin._id, staffId: admin.staffId });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -37,6 +42,9 @@ exports.createFirstAdmin = async (req, res) => {
 exports.createStaff = async (req, res) => {
   try {
     const { name, dob, gender, phone, address, email, role, specialisation, workingDays, fee, password } = req.body;
+
+    // Generate staff ID
+    const staffId = generateStaffId(role);
 
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -49,6 +57,7 @@ exports.createStaff = async (req, res) => {
       address,
       email,
       role,
+      staffId,
       specialisation,
       workingDays,
       fee,
@@ -56,7 +65,7 @@ exports.createStaff = async (req, res) => {
     });
 
     await user.save();
-    res.status(201).json({ message: 'Staff created successfully', userId: user._id });
+    res.status(201).json({ message: 'Staff created successfully', userId: user._id, staffId: user.staffId });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -69,7 +78,7 @@ exports.updateStaff = async (req, res) => {
       const updateData = { ...req.body };
       // Prevent role or password change here unless explicitly allowed
       delete updateData.password;
-      const user = await User.findByIdAndUpdate(staffId, updateData, { new: true });
+      const user = await User.findOneAndUpdate({ staffId }, updateData, { new: true });
       if (!user) return res.status(404).json({ error: 'Staff not found' });
       res.json({ message: 'Staff updated', user });
     } catch (err) {
@@ -81,7 +90,7 @@ exports.updateStaff = async (req, res) => {
   exports.getStaffById = async (req, res) => {
     try {
       const { staffId } = req.params;
-      const user = await User.findById(staffId).select('-password');
+      const user = await User.findOne({ staffId }).select('-password');
       if (!user) return res.status(404).json({ error: 'Staff not found' });
       res.json(user);
     } catch (err) {
@@ -103,7 +112,7 @@ exports.updateStaff = async (req, res) => {
   exports.deactivateStaff = async (req, res) => {
     try {
       const { staffId } = req.params;
-      const user = await User.findByIdAndUpdate(staffId, { isActive: false }, { new: true });
+      const user = await User.findOneAndUpdate({ staffId }, { isActive: false }, { new: true });
       if (!user) return res.status(404).json({ error: 'Staff not found' });
       res.json({ message: 'Staff deactivated', user });
     } catch (err) {
@@ -116,6 +125,9 @@ exports.updateStaff = async (req, res) => {
       const { name, dob, gender, phone, address, email, specialisation, workingDays, fee, password } = req.body;
       const role = 'doctor';
   
+      // Generate staff ID
+      const staffId = generateStaffId(role);
+  
       const hashedPassword = await require('bcryptjs').hash(password, 10);
   
       const doctor = new User({
@@ -126,6 +138,7 @@ exports.updateStaff = async (req, res) => {
         address,
         email,
         role,
+        staffId,
         specialisation,
         workingDays,
         fee,
@@ -133,7 +146,7 @@ exports.updateStaff = async (req, res) => {
       });
   
       await doctor.save();
-      res.status(201).json({ message: 'Doctor profile created', doctorId: doctor._id });
+      res.status(201).json({ message: 'Doctor profile created', doctorId: doctor._id, staffId: doctor.staffId });
     } catch (err) {
       res.status(400).json({ error: err.message });
     }
@@ -146,7 +159,7 @@ exports.updateStaff = async (req, res) => {
       const updateData = { ...req.body };
       delete updateData.password;
       const doctor = await User.findOneAndUpdate(
-        { _id: doctorId, role: 'doctor' },
+        { staffId: doctorId, role: 'doctor' },
         updateData,
         { new: true }
       );
@@ -161,7 +174,7 @@ exports.updateStaff = async (req, res) => {
   exports.getDoctorById = async (req, res) => {
     try {
       const { doctorId } = req.params;
-      const doctor = await User.findOne({ _id: doctorId, role: 'doctor' }).select('-password');
+      const doctor = await User.findOne({ staffId: doctorId, role: 'doctor' }).select('-password');
       if (!doctor) return res.status(404).json({ error: 'Doctor not found' });
       res.json(doctor);
     } catch (err) {
@@ -184,7 +197,7 @@ exports.updateStaff = async (req, res) => {
     try {
       const { doctorId } = req.params;
       const doctor = await User.findOneAndUpdate(
-        { _id: doctorId, role: 'doctor' },
+        { staffId: doctorId, role: 'doctor' },
         { isActive: false },
         { new: true }
       );
