@@ -1,6 +1,9 @@
 const Appointment = require('../../models/receptionist/appointment');
 const User = require('../../models/admin/admin');
 const crypto = require('crypto');
+const ApiResponse = require('../../utils/apiResponse');
+const { logHelper } = require('../../utils/logger');
+const { asyncHandler } = require('../../middleware/errorHandler');
 
 // Utility: Generate unique appointment ID
 function generateAppointmentId() {
@@ -21,45 +24,69 @@ async function getAvailableSlots(doctorId, date, slotsPerDay = 10) {
 }
 
 // Schedule Appointment
-exports.scheduleAppointment = async (req, res) => {
-  try {
-    const { patientId, doctorId, date, timeSlot, createdBy } = req.body;
+exports.scheduleAppointment = asyncHandler(async (req, res) => {
+  const { patientId, doctorId, date, timeSlot, createdBy } = req.body;
 
-    // Check doctor exists and is active
-    const doctor = await User.findOne({ _id: doctorId, role: 'doctor', isActive: true });
-    if (!doctor) return res.status(404).json({ error: 'Doctor not found or inactive' });
-
-    // Check if slot is available
-    const existing = await Appointment.findOne({ doctorId, date, timeSlot, status: 'scheduled' });
-    if (existing) return res.status(400).json({ error: 'Time slot already booked' });
-
-    // Token: count existing appointments for the doctor on that date
-    const count = await Appointment.countDocuments({ doctorId, date, status: 'scheduled' });
-    const token = count + 1;
-
-    // If slots full, suggest next day
-    if (token > 10) {
-      return res.status(400).json({ error: 'All slots full for this date. Please choose another day.' });
-    }
-
-    const appointmentId = generateAppointmentId();
-
-    const appointment = new Appointment({
-      appointmentId,
-      patientId,
-      doctorId,
-      date,
-      timeSlot,
-      token,
-      createdBy
-    });
-
-    await appointment.save();
-    res.status(201).json({ message: 'Appointment scheduled', appointmentId, token });
-  } catch (err) {
-    res.status(400).json({ error: err.message });
+  // Validate required fields
+  if (!patientId || !doctorId || !date || !timeSlot || !createdBy) {
+    return ApiResponse.error(res, 'All fields are required', 400);
   }
-};
+
+  // Convert Indian date format (DD/MM/YYYY) to ISO format for database storage
+  const { convertIndianDateToISO } = require('../../utils/validation');
+  const isoDate = convertIndianDateToISO(date);
+
+  // Check doctor exists and is active
+  const doctor = await User.findOne({ staffId: doctorId, role: 'doctor', isActive: true });
+  if (!doctor) {
+    return ApiResponse.notFound(res, 'Doctor not found or inactive');
+  }
+
+  // Check if slot is available
+  const existing = await Appointment.findOne({ doctorId, date: isoDate, timeSlot, status: 'scheduled' });
+  if (existing) {
+    return ApiResponse.error(res, 'Time slot already booked', 409);
+  }
+
+  // Token: count existing appointments for the doctor on that date
+  const count = await Appointment.countDocuments({ doctorId, date: isoDate, status: 'scheduled' });
+  const token = count + 1;
+
+  // If slots full, suggest next day
+  if (token > 10) {
+    return ApiResponse.error(res, 'All slots full for this date. Please choose another day.', 400);
+  }
+
+  const appointmentId = generateAppointmentId();
+
+  const appointment = new Appointment({
+    appointmentId,
+    patientId,
+    doctorId,
+    date: isoDate,
+    timeSlot,
+    token,
+    createdBy
+  });
+
+  await appointment.save();
+  
+  logHelper.info('Appointment scheduled', {
+    appointmentId,
+    patientId,
+    doctorId,
+    date: isoDate,
+    timeSlot,
+    token,
+    createdBy
+  });
+
+  return ApiResponse.success(res, {
+    appointmentId,
+    token,
+    appointment
+  }, 'Appointment scheduled successfully', 201);
+});
 
 // Update Appointment
 exports.updateAppointment = async (req, res) => {

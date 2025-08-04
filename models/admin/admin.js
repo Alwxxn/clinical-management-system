@@ -7,14 +7,14 @@ const userSchema = new mongoose.Schema({
   phone: {
     type: String,
     required: true,
-    match: [/^\+91\d{10}$/, 'Phone number must be in format +911234567890'],
+    match: [/^\+91[6-9]\d{9}$/, 'Phone number must be in format +916789012345 (Indian mobile number starting with 6,7,8,9)'],
     unique: true
   },
   address: { type: String, required: true },
   email: {
     type: String,
     required: true,
-    match: [/.+\@.+\.com$/, 'Email must be valid and end with .com'],
+    match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Email must be in valid format'],
     unique: true
   },
   role: {
@@ -30,11 +30,11 @@ const userSchema = new mongoose.Schema({
   isActive: { type: Boolean, default: true }
 }, { timestamps: true });
 
-// Age validation
+// Enhanced age validation
 userSchema.pre('save', function (next) {
-  const today = new Date();
-  const dob = new Date(this.dob);
-  const age = today.getFullYear() - dob.getFullYear();
+  const { calculateAge } = require('../../utils/validation');
+  const age = calculateAge(this.dob);
+  
   if (this.role === 'doctor' && age < 25) {
     return next(new Error('Doctor must be at least 25 years old'));
   }

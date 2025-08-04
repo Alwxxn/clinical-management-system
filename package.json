@@ -16,15 +16,13 @@
     "express": "^5.1.0",
     "express-validator": "^7.2.1",
     "express-validators": "^1.0.4",
+    "express-rate-limit": "^7.1.5",
+    "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
-
-
     "mongoose": "^8.16.5",
+    "morgan": "^1.10.0",
+    "winston": "^3.11.0",
     "validators": "^0.3.1"
-
-
-  
-
   },
   "devDependencies": {
     "nodemon": "^3.1.10"

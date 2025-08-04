@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const medicinePrescriptionSchema = new mongoose.Schema({
   appointmentId: { type: String, required: true, unique: true },
-  doctorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  doctorId: { type: String, required: true }, // Using staffId instead of ObjectId
   patientId: { type: String, required: true },
   medicines: [
     {

@@ -15,7 +15,7 @@ exports.createFirstAdmin = async (req, res) => {
     const role = 'admin'; // Force role to admin
 
     // Generate staff ID
-    const staffId = generateStaffId(role);
+    const staffId = await generateStaffId(role);
 
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -44,7 +44,7 @@ exports.createStaff = async (req, res) => {
     const { name, dob, gender, phone, address, email, role, specialisation, workingDays, fee, password } = req.body;
 
     // Generate staff ID
-    const staffId = generateStaffId(role);
+    const staffId = await generateStaffId(role);
 
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -126,7 +126,7 @@ exports.updateStaff = async (req, res) => {
       const role = 'doctor';
   
       // Generate staff ID
-      const staffId = generateStaffId(role);
+      const staffId = await generateStaffId(role);
   
       const hashedPassword = await require('bcryptjs').hash(password, 10);
   
