@@ -219,6 +219,22 @@ const convertIndianDateToISO = (indianDate) => {
 };
 
 /**
+ * Convert date string to Date object, handling Indian format (DD/MM/YYYY)
+ * @param {string} dateString - Date string in any format
+ * @returns {Date} Date object
+ */
+const convertToDateObject = (dateString) => {
+  if (typeof dateString === 'string' && dateString.includes('/')) {
+    // Handle Indian date format (DD/MM/YYYY)
+    const [day, month, year] = dateString.split('/');
+    return new Date(year, month - 1, day); // month is 0-indexed
+  } else {
+    // Handle other date formats (ISO, etc.)
+    return new Date(dateString);
+  }
+};
+
+/**
  * Sanitize and validate object properties
  * @param {Object} obj - Object to sanitize
  * @returns {Object} Sanitized object
@@ -254,5 +270,6 @@ module.exports = {
   validateDate,
   formatIndianDate,
   convertIndianDateToISO,
+  convertToDateObject,
   sanitizeObject
 }; 

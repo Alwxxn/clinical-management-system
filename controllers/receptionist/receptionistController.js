@@ -1,15 +1,19 @@
 const Patient = require('../../models/receptionist/patient');
 const generatePatientId = require('../../utils/generatePatientId');
+const { convertToDateObject } = require('../../utils/validation');
 
 exports.registerPatient = async (req, res) => {
   try {
     const { name, dob, gender, phone, address, email } = req.body;
 
+    // Convert date string to Date object
+    const dobDate = convertToDateObject(dob);
+
     const patientId = generatePatientId();
 
     const patient = new Patient({
       name,
-      dob,
+      dob: dobDate,
       gender,
       phone,
       address,
@@ -28,6 +32,12 @@ exports.updatePatient = async (req, res) => {
     try {
       const { patientId } = req.params;
       const updateData = { ...req.body };
+      
+      // Convert date string to Date object if dob is being updated
+      if (updateData.dob) {
+        updateData.dob = convertToDateObject(updateData.dob);
+      }
+      
       const patient = await Patient.findOneAndUpdate(
         { patientId },
         updateData,

@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const User = require('../../models/admin/admin');
 const generateStaffId = require('../../utils/generateStaffId');
+const { convertToDateObject } = require('../../utils/validation');
 
 // Create First Admin (no auth required)
 exports.createFirstAdmin = async (req, res) => {
@@ -14,6 +15,9 @@ exports.createFirstAdmin = async (req, res) => {
     const { name, dob, gender, phone, address, email, password } = req.body;
     const role = 'admin'; // Force role to admin
 
+    // Convert date string to Date object
+    const dobDate = convertToDateObject(dob);
+
     // Generate staff ID
     const staffId = await generateStaffId(role);
 
@@ -22,7 +26,7 @@ exports.createFirstAdmin = async (req, res) => {
 
     const admin = new User({
       name,
-      dob,
+      dob: dobDate,
       gender,
       phone,
       address,
@@ -43,6 +47,9 @@ exports.createStaff = async (req, res) => {
   try {
     const { name, dob, gender, phone, address, email, role, specialisation, workingDays, fee, password } = req.body;
 
+    // Convert date string to Date object
+    const dobDate = convertToDateObject(dob);
+
     // Generate staff ID
     const staffId = await generateStaffId(role);
 
@@ -51,7 +58,7 @@ exports.createStaff = async (req, res) => {
 
     const user = new User({
       name,
-      dob,
+      dob: dobDate,
       gender,
       phone,
       address,
@@ -76,6 +83,12 @@ exports.updateStaff = async (req, res) => {
     try {
       const { staffId } = req.params;
       const updateData = { ...req.body };
+      
+      // Convert date string to Date object if dob is being updated
+      if (updateData.dob) {
+        updateData.dob = convertToDateObject(updateData.dob);
+      }
+      
       // Prevent role or password change here unless explicitly allowed
       delete updateData.password;
       const user = await User.findOneAndUpdate({ staffId }, updateData, { new: true });
